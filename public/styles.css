@@ -1,0 +1,449 @@
+/* Siri4EU Tracker — dark editorial theme. Mobile-first; scales up at 640/900px. */
+
+:root {
+  --bg: #0a0a0a;
+  --bg-raised: #111113;
+  --bg-card: #0f0f11;
+  --text: #f5f5f4;
+  --text-dim: #a1a1aa;
+  --text-faint: #6b6b73;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --pink: #ff6ec4;
+  --purple: #b06cff;
+  --blue: #5b8cff;
+  --gradient: linear-gradient(100deg, #ff6ec4 0%, #b06cff 48%, #5b8cff 100%);
+  --radius: 18px;
+  --radius-lg: 26px;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  --maxw: 760px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Subtle radial glow up top, fading into near-black. */
+  background-image:
+    radial-gradient(1200px 600px at 50% -200px, rgba(176, 108, 255, 0.10), transparent 70%),
+    radial-gradient(900px 500px at 90% -100px, rgba(91, 140, 255, 0.07), transparent 70%);
+  background-attachment: fixed;
+}
+
+.page {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* --- Masthead ------------------------------------------------------------- */
+
+.masthead {
+  padding: 28px 0 8px;
+}
+
+.eyebrow {
+  margin: 0 0 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--text-faint);
+}
+
+.display {
+  margin: 0;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.gradient {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.lede {
+  margin: 22px 0 0;
+  max-width: 56ch;
+  color: var(--text-dim);
+  font-size: 1.05rem;
+}
+
+/* --- Pill nav ------------------------------------------------------------- */
+
+.pillbar {
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 34px 0 22px;
+  padding: 8px;
+  background: rgba(17, 17, 19, 0.72);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.pill:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pill.is-active {
+  color: #0a0a0a;
+  background: #f5f5f4;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.pillbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search {
+  appearance: none;
+  width: 150px;
+  max-width: 42vw;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.search::placeholder {
+  color: var(--text-faint);
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.refresh {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.refresh:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.refresh-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.refresh.is-busy .refresh-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Cards (shared) ------------------------------------------------------- */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* --- Stats ---------------------------------------------------------------- */
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 22px 26px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-num {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.stat-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+}
+
+.stat-meter {
+  flex: 1 1 180px;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar-track {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gradient);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bar-label {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+/* --- Feed ----------------------------------------------------------------- */
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article {
+  padding: 22px 24px;
+  border-radius: var(--radius);
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.article:hover {
+  border-color: var(--border-strong);
+  background: #131316;
+  transform: translateY(-2px);
+}
+
+.article-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.source {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dot {
+  color: var(--text-faint);
+}
+
+.article-head time {
+  color: var(--text-faint);
+}
+
+.headline {
+  margin: 0;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  font-size: 1.32rem;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+}
+
+.headline a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.headline a:hover {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.snippet {
+  margin: 11px 0 0;
+  color: var(--text-dim);
+  font-size: 0.97rem;
+}
+
+.article-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.tag.policy {
+  color: #d7a6ff;
+  border-color: rgba(176, 108, 255, 0.35);
+}
+
+.tag.siri {
+  color: #9fc0ff;
+  border-color: rgba(91, 140, 255, 0.35);
+}
+
+.read {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.read:hover {
+  color: var(--text);
+}
+
+/* --- States --------------------------------------------------------------- */
+
+.placeholder,
+.empty,
+.error {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-faint);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.error {
+  color: #ffb4b4;
+  border-color: rgba(255, 120, 120, 0.3);
+}
+
+/* --- Colophon ------------------------------------------------------------- */
+
+.colophon {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 0.82rem;
+}
+
+.colophon p {
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* --- Larger screens ------------------------------------------------------- */
+
+@media (min-width: 640px) {
+  .page {
+    padding: 56px 28px 100px;
+  }
+
+  .article {
+    padding: 26px 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

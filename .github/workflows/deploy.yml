@@ -1,0 +1,62 @@
+name: Build & deploy to GitHub Pages
+
+on:
+  # Redeploy on every push to the default branch.
+  push:
+    branches: [main]
+  # Rebuild the news snapshot on a schedule (every 30 min). This is what keeps
+  # the static site fresh — it replaces the live server's cache refresh.
+  schedule:
+    - cron: '*/30 * * * *'
+  # Allow manual runs from the Actions tab.
+  workflow_dispatch:
+
+# Permissions required by the GitHub Pages deployment actions.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; don't cancel an in-progress deploy.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build news snapshot
+        # NEWSAPI_KEY is optional — set it as a repo secret for broader coverage.
+        # If unset, the build falls back to RSS only.
+        env:
+          NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
+          MAX_AGE_DAYS: ${{ vars.MAX_AGE_DAYS }}
+        run: npm run build:static
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

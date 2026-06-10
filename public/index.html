@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Siri VS EU Tracker — Siri AI in the European Union</title>
+  <meta
+    name="description"
+    content="Live aggregated news on Siri AI's availability in the EU and the Apple vs. EU Digital Markets Act dispute."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Display serif; degrades to Georgia offline. -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <p class="eyebrow">SIRI VS EU&nbsp;TRACKER</p>
+      <h1 class="display">
+        Apple, Siri &amp; the EU<br />
+        <span class="gradient">the DMA standoff, tracked live</span>
+      </h1>
+      <p class="lede">
+        Aggregated reporting on whether — and when — Siri AI reaches the European Union,
+        amid Apple's standoff with the Digital Markets Act. Headlines and feed summaries only,
+        linked back to the original sources.
+      </p>
+    </header>
+
+    <nav class="pillbar" aria-label="Filter coverage">
+      <div class="pills" id="pills" role="tablist">
+        <button class="pill is-active" data-filter="all" role="tab">All coverage</button>
+        <button class="pill" data-filter="policy" role="tab">DMA &amp; Policy</button>
+        <button class="pill" data-filter="siri" role="tab">Siri &amp; AI</button>
+      </div>
+      <div class="pillbar-actions">
+        <input
+          id="search"
+          class="search"
+          type="search"
+          placeholder="Search headlines…"
+          aria-label="Search headlines"
+        />
+        <button id="refresh" class="refresh" title="Refresh now" aria-label="Refresh now">
+          <span class="refresh-icon" aria-hidden="true">↻</span>
+        </button>
+      </div>
+    </nav>
+
+    <section class="stats card" id="stats" aria-live="polite">
+      <div class="stat">
+        <span class="stat-num" id="stat-total">—</span>
+        <span class="stat-label">Articles tracked</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat">
+        <span class="stat-num" id="stat-sources">—</span>
+        <span class="stat-label">Sources</span>
+      </div>
+      <div class="stat-meter">
+        <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+        <span class="bar-label" id="bar-label">Loading feeds…</span>
+      </div>
+    </section>
+
+    <main id="feed" class="feed" aria-live="polite">
+      <div class="placeholder" id="placeholder">Loading the latest coverage…</div>
+    </main>
+
+    <footer class="colophon">
+      <p>
+        Siri4EU Tracker aggregates public RSS feeds (and optionally NewsAPI.org). Summaries and
+        links are shown to credit and drive traffic to the original publishers — full article
+        text is never reproduced.
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

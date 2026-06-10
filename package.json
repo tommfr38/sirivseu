@@ -1,0 +1,22 @@
+{
+  "name": "siri4eu-tracker",
+  "version": "1.0.0",
+  "description": "Aggregates the latest news on Siri AI's availability in the EU (the Apple vs. EU DMA dispute).",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "feeds": "node scripts/fetch-console.js",
+    "build:static": "node scripts/build-static.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "rss-parser": "^3.13.0"
+  },
+  "license": "MIT"
+}
