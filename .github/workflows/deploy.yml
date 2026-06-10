@@ -6,8 +6,10 @@ on:
     branches: [main]
   # Rebuild the news snapshot on a schedule (every 30 min). This is what keeps
   # the static site fresh — it replaces the live server's cache refresh.
+  # Offset to :07 / :37 to avoid the :00 / :30 congestion window where GitHub
+  # silently drops or delays scheduled runs under load.
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '7,37 * * * *'
   # Allow manual runs from the Actions tab.
   workflow_dispatch:
 
