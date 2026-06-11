@@ -4,12 +4,14 @@ on:
   # Redeploy on every push to the default branch.
   push:
     branches: [main]
-  # Rebuild the news snapshot on a schedule (every 30 min). This is what keeps
-  # the static site fresh — it replaces the live server's cache refresh.
-  # Offset to :07 / :37 to avoid the :00 / :30 congestion window where GitHub
-  # silently drops or delays scheduled runs under load.
+  # Rebuild the news snapshot on a schedule. This is what keeps the static
+  # site fresh — it replaces the live server's cache refresh.
+  # GitHub's scheduler is best-effort and silently drops slots under load
+  # (observed: 6 consecutive 30-min slots skipped). Oversample at every
+  # 10 min so a ~30-min cadence survives heavy dropping; the concurrency
+  # group below keeps deploys serialized either way.
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '4,14,24,34,44,54 * * * *'
   # Allow manual runs from the Actions tab.
   workflow_dispatch:
 
