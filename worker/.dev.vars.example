@@ -1,0 +1,2 @@
+# Copy to .dev.vars to inject secrets into `wrangler dev`. Never commit .dev.vars.
+# NEWSAPI_KEY=your-key-here

@@ -1,0 +1,19 @@
+name = "siri4eu-worker"
+main = "src/index.js"
+compatibility_date = "2025-07-18"
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+# Created in Stage 2 with `npx wrangler kv namespace create NEWS_KV`.
+# Paste the printed `id` (and `preview_id` if you want a separate preview store) here.
+[[kv_namespaces]]
+binding = "NEWS_KV"
+id = "b3634a1ea38249b992c81492f2ae696f"
+
+[vars]
+MAX_AGE_DAYS = "60"
+ALLOWED_ORIGIN = "https://tommfr38.com"
+
+# NEWSAPI_KEY is a secret, set with `npx wrangler secret put NEWSAPI_KEY` if you ever want it.
+# Worker runs RSS-only when unset.

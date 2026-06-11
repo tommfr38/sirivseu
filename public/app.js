@@ -1,7 +1,11 @@
 // Siri4EU Tracker — frontend logic.
-// Pulls /api/news, renders stats + article cards, handles pill filters, search,
-// manual + periodic refresh. Articles are built via the DOM (textContent) so
-// feed-supplied titles/snippets can never inject markup.
+// Pulls the Worker's /news.json, renders stats + article cards, handles pill
+// filters, search, manual + periodic refresh. Articles are built via the DOM
+// (textContent) so feed-supplied titles/snippets can never inject markup.
+
+// Cloudflare Worker that aggregates feeds every 30 min and serves the result
+// from KV. CORS is locked to https://tommfr38.com on the Worker side.
+const NEWS_ENDPOINT = 'https://siri4eu-worker.sirivseu.workers.dev/news.json';
 
 const state = {
   articles: [],
@@ -156,13 +160,13 @@ function render() {
 
 async function load({ force = false } = {}) {
   try {
-    // Always fetch `news.json`. Locally the Express server answers this
-    // dynamically with live data; on GitHub Pages it's a static snapshot baked
-    // by the deploy workflow. The cache-buster keeps the CDN copy fresh; the
-    // refresh flag forces a live re-fetch when a backend is present.
+    // Worker returns the latest cron-built KV snapshot. `force` bypasses any
+    // browser/CDN cache but the Worker itself has no on-demand rebuild — the
+    // freshest data is whatever the last 30-min cron tick produced.
     const params = new URLSearchParams({ t: Date.now() });
-    if (force) params.set('refresh', '1');
-    const res = await fetch(`news.json?${params}`);
+    const res = await fetch(`${NEWS_ENDPOINT}?${params}`, {
+      cache: force ? 'no-store' : 'default',
+    });
     if (!res.ok) throw new Error(`Server responded ${res.status}`);
     const data = await res.json();
     state.articles = data.articles || [];
