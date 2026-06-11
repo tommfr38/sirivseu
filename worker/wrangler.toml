@@ -3,7 +3,7 @@ main = "src/index.js"
 compatibility_date = "2025-07-18"
 
 [triggers]
-crons = ["*/30 * * * *"]
+crons = ["*/5 * * * *"]
 
 # Created in Stage 2 with `npx wrangler kv namespace create NEWS_KV`.
 # Paste the printed `id` (and `preview_id` if you want a separate preview store) here.
