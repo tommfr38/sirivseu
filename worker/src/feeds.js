@@ -11,6 +11,12 @@ import { XMLParser } from 'fast-xml-parser';
 const DEFAULT_FRESH_DAYS = 60;
 const FETCH_TIMEOUT_MS = 12000;
 
+// The free Workers plan allows 10ms of CPU per invocation, and XML parsing is
+// where nearly all of it goes (9to5Mac and Google News return 100 items each).
+// We only ever show recent articles, so cap how much XML reaches the parser.
+const MAX_ITEMS_PER_FEED = 25;
+const MAX_SNIPPET_HTML = 4000;
+
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
@@ -67,6 +73,32 @@ function splitGoogleTitle(rawTitle = '') {
     title: rawTitle.slice(0, idx).trim(),
     source: rawTitle.slice(idx + 3).trim() || null,
   };
+}
+
+// Cut the raw XML down to the first `maxItems` items/entries before parsing.
+// indexOf scans are native and cost microseconds; parsing is what costs
+// milliseconds, so trimming input here is the whole CPU win. Feeds are
+// newest-first, so dropping the tail only loses old items.
+export function truncateXmlItems(xml, maxItems = MAX_ITEMS_PER_FEED) {
+  const modes = [
+    { tag: '</item>', root: '<rss', close: '</channel></rss>' },
+    { tag: '</entry>', root: '<feed', close: '</feed>' },
+  ];
+  for (const { tag, root, close } of modes) {
+    if (!xml.includes(root)) continue;
+    let idx = -1;
+    let count = 0;
+    while (count < maxItems) {
+      const next = xml.indexOf(tag, idx + 1);
+      if (next === -1) break;
+      idx = next;
+      count += 1;
+    }
+    if (count === 0) continue;
+    if (xml.indexOf(tag, idx + 1) === -1) return xml; // already short enough
+    return xml.slice(0, idx + tag.length) + close;
+  }
+  return xml;
 }
 
 // Some fields come back as either a string OR an object with `#text` (when the
@@ -128,7 +160,10 @@ function normalizeItem(item, feed) {
     textOf(item.summary) ||
     textOf(item.content) ||
     '';
-  let snippet = truncate(cleanText(rawSnippet));
+  // Full-content feeds put entire posts here; cleanText's regex passes over
+  // tens of KB per item add up against the CPU limit. The snippet shows at
+  // most 280 chars, so a few KB of source HTML is plenty.
+  let snippet = truncate(cleanText(rawSnippet.slice(0, MAX_SNIPPET_HTML)));
   if (aggregator) {
     const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
     const ns = norm(snippet);
@@ -172,7 +207,7 @@ function extractItems(parsed) {
   return [];
 }
 
-export async function fetchFeed(feed) {
+export async function fetchFeed(feed, maxItems = MAX_ITEMS_PER_FEED) {
   try {
     const res = await fetch(feed.url, {
       headers: {
@@ -184,7 +219,7 @@ export async function fetchFeed(feed) {
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const xml = await res.text();
-    const parsed = xmlParser.parse(xml);
+    const parsed = xmlParser.parse(truncateXmlItems(xml, maxItems));
     const rawItems = extractItems(parsed);
     const items = rawItems
       .map((item) => normalizeItem(item, feed))
@@ -201,6 +236,6 @@ export async function fetchFeed(feed) {
   }
 }
 
-export async function fetchAllFeeds(feeds) {
-  return Promise.all(feeds.map(fetchFeed));
+export async function fetchAllFeeds(feeds, maxItems = MAX_ITEMS_PER_FEED) {
+  return Promise.all(feeds.map((feed) => fetchFeed(feed, maxItems)));
 }

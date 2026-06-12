@@ -1,6 +1,6 @@
 // Siri4EU news Worker.
 //
-// scheduled handler (cron, every 30 min): runs the aggregation pipeline, writes
+// scheduled handler (cron, every 5 min): runs the aggregation pipeline, writes
 // the result to KV under the key "latest".
 // fetch handler (HTTP): GET /news.json reads "latest" from KV and serves it
 // with CORS headers locked to env.ALLOWED_ORIGIN. OPTIONS is handled for
